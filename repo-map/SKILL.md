@@ -1,6 +1,6 @@
 ---
 name: repo-map
-description: 高级代码库结构理解技能。用于快速建立项目地图、识别技术栈、入口文件、模块分层、依赖方向、测试布局、构建发布路径、前后端边界和功能归属；当用户询问项目结构、模块关系、入口位置、数据流、调用链、架构边界或需要大范围改动前定向上下文时使用。
+description: 建立代码库或单个功能的证据化地图，识别技术栈、入口、模块职责、依赖方向、测试与构建边界。当用户询问项目结构、数据流、模块关系、架构边界，或多模块改动前需要确定影响范围时使用；不要为只涉及一个已知文件的小改动加载全仓库地图。
 ---
 
 # Repo Map Skill
@@ -41,7 +41,9 @@ description: 高级代码库结构理解技能。用于快速建立项目地图�
 - **微信小程序**：`app.json`、pages、components、分包、utils、BLE/protocol/parser/framer、权限和生命周期。
 - **Monorepo**：workspace roots、package graph、shared packages、build pipeline、cross-package imports。
 
-## Output Contract
+## Result Shape
+
+当用户明确要仓库地图时使用完整结构；作为规划前置步骤时只返回与当前改动有关的模块、依赖和风险：
 
 ```text
 Map Depth: <scan|feature|architecture|change>
@@ -63,3 +65,4 @@ Change/Risk Notes:
 - 如果没有依赖分析工具，只能说“根据配置和 import 推断”。
 - 不把 vendor、dist、build、coverage、cache 当作架构事实来源。
 - 发现上下文冲突时直接标出冲突，并说明需要哪类证据解决。
+- 地图只做到足以支持当前问题；不要遍历无关模块来追求“完整”。

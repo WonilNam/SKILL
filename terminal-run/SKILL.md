@@ -1,6 +1,6 @@
 ---
 name: terminal-run
-description: 高级终端执行、复现和验证技能。用于运行构建、测试、类型检查、lint/format、脚本、开发服务器、诊断命令、环境探测和只读 Git 检查；当需要真实系统结果验证假设、复现错误、确认修复、收集日志或判断环境问题时使用。
+description: 在本地终端中运行构建、测试、类型检查、lint、脚本、开发服务器或只读诊断，并用真实输出验证工程结论。当任务需要复现错误、确认修复、收集日志或判断环境问题时使用；不因仅展示一条命令或讨论理论结果而触发执行。
 ---
 
 # Terminal Run Skill
@@ -39,6 +39,8 @@ description: 高级终端执行、复现和验证技能。用于运行构建、�
 - 构建、测试、类型检查、lint/format、只读查询、项目内 dev server。
 - 只读 Git：`git status`、`git diff`、`git log`、`git show`、`git branch --show-current`。
 
+“test”“dev”“start”等脚本名称不代表无副作用。首次运行前读取对应 script/config；如果会连接非隔离数据库、执行迁移/seed、调用真实外部服务、发送消息、发布或清理数据，按实际副作用进入授权门禁。
+
 需要用户明确要求或授权：
 
 - 删除/清理：`rm -rf`、`Remove-Item -Recurse -Force`、`del /s`、`rmdir /s`、`git clean`。
@@ -55,11 +57,13 @@ Windows 文件操作规则：
 
 ## Long-Running Commands
 
-- Dev server：启动后确认 URL、端口、关键日志；不要在最终答复前留下不明状态。
+- Dev server：启动后确认 URL、端口、关键日志；记录进程并在验证结束后关闭，除非用户要求持续运行。
 - Watch mode：除非用户要求持续运行，否则避免用 watch 命令作为验证。
 - Timeout：超时不是失败结论，要说明超时点和已看到的输出。
 
-## Output Contract
+## Result Reporting
+
+命令只是任务中的验证步骤时，最终只摘要命令、结果和关键错误；用户明确要求执行报告时使用完整结构：
 
 ```text
 Command: <command>
@@ -78,3 +82,5 @@ Next:
 - 不隐藏 stderr 中的关键诊断。
 - 不为“看起来应该可以”跳过可行验证。
 - 命令失败时先读输出，不要盲目换方案。
+- 严禁编造或凭空想象终端命令的输出。如果无法运行或工具未安装，必须在结果中明确归类为 env-error，并展示真实报错。
+- 区分“命令成功”和“需求已验证”：退出码为 0 也可能没有覆盖目标行为，必须说明验证范围。
